@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Notes app</title>
+</head>
+
+<body>
+    <!--
+    <div class="notes">
+        <div class="tools">
+            <button class="edit"><i class="fa fa-edit"></i></button>
+            <button class="delete"><i class="fa fa-trash"></i></button>
+        </div>
+        <div class="main hidden"></div>
+        <textarea></textarea>
+    </div>
+     -->
+
+    <button class="add"> <i class="fa fa-plus"></i>Add notes</button>
+
+    <script>
+        const notes = JSON.parse(localStorage.getItem('notes'));
+
+        if (notes) {
+            notes.forEach(note => {
+                addNewNote();
+            })
+        }
+
+        const addBtn = document.querySelector('.add');
+
+        addBtn.addEventListener('click', () => {
+            addNewNote();
+
+        });
+
+        function addNewNote(text = '') {
+            const note = document.createElement('div');
+            note.classList.add('note');
+
+            note.innerHTML = `<div class="notes">
+        <div class="tools">
+            <button class="edit"><i class="fa fa-edit"></i></button>
+            <button class="delete"><i class="fa fa-trash"></i></button>
+        </div>
+        <div class="main hidden"></div>
+        <textarea></textarea>
+    </div>`;
+
+            const editBtn = note.querySelector(".edit");
+            const deleteBtn = note.querySelector(".delete");
+            const main = note.querySelector(".main");
+            const textarea = note.querySelector('textarea');
+            textarea.value = text;
+            editBtn.addEventListener('click', () => {
+                main.classList.toggle("hidden");
+                textarea.classList.toggle('hidden');
+
+            })
+
+            deleteBtn.addEventListener('click', () => {
+                note.remove();
+            })
+
+
+            textarea.addEventListener('input', (e) => {
+                const { value } = e.target;
+
+                main.innerHTML = marked(value);
+                updateLS();
+            });
+
+
+            document.body.appendChild(note);
+
+        }
+        function updateLS() {
+            const notesText = document.querySelectorAll('textarea');
+            const notes = [];
+            notesText.forEach((note) => {
+                notes.push(note.value);
+            })
+
+
+            localStorage.setItem('notes', JSON.stringify(notes))
+        };
+
+
+
+
+
+    </script>
+</body>
+
+</html>
